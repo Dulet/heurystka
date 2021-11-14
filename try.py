@@ -6,10 +6,11 @@ from geopy import distance
 distance = [[round(((distance.distance(tuple(x[:2]), tuple(y[:2]))).km)) for y in values] for x in values]
 
 T = 30
-FACTOR = 0.999
+FACTOR = 0.99
 T_INIT = T
-MAX_EPOCH = 100
+MAX_EPOCH = 1000
 MAX_TRIES = 100
+CAPACITY = 1000
 
 class Coordinate:
     def __init__(self, x, y, capacity, index):
@@ -21,11 +22,11 @@ class Coordinate:
 def into_vehicle_paths(coords):
     tempcoords = coords[1:]
     paths = [[coords[0]]]
-    capacity = 1000
+    capacity = CAPACITY
     while tempcoords:
         if tempcoords[0].capacity > capacity:
             paths.append([coords[0]])
-            capacity = 1000
+            capacity = CAPACITY
         else:
             capacity -= tempcoords[0].capacity
             paths[-1].append(tempcoords[0])
@@ -48,6 +49,8 @@ def plot(ax, coords):
         for first, second in zip(path[:-1], path[1:]):
             ax.plot([first.x, second.x], [first.y, second.y], color)
         ax.plot([path[0].x, path[-1].x], [path[0].y, path[-1].y], color)
+    for i, value in enumerate(values):
+        ax.annotate(i, xy=(value[0], value[1]))
     for c in coords:
         ax.plot(c.x, c.y, 'ro')
 
