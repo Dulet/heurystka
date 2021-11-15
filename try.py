@@ -3,12 +3,14 @@ import matplotlib.pyplot as plt
 from values import values
 from geopy import distance
 
-distance = [[round(((distance.distance(tuple(x[:2]), tuple(y[:2]))).km)) for y in values] for x in values]
+# tworzenie listy dystansow miedzy kazdymi punktami
+distance = [[round(((distance.distance(tuple(x[:2]), tuple(y[:2]))).km)) for y in values] for x in values] 
 
+# wartości które możemy zmieniać
 T = 30
 FACTOR = 0.99
 T_INIT = T
-MAX_EPOCH = 1000
+MAX_EPOCH = 500
 MAX_TRIES = 100
 CAPACITY = 1000
 
@@ -18,7 +20,11 @@ class Coordinate:
         self.y = y
         self.capacity = capacity
         self.index = index
+        
+    def __repr__(self):
+        return self.index
 
+# capacity constraint
 def into_vehicle_paths(coords):
     tempcoords = coords[1:]
     paths = [[coords[0]]]
@@ -43,6 +49,7 @@ def get_total_distance(coords):
 def get_multiple_paths_distance(coords):
     return sum(get_total_distance(path) for path in into_vehicle_paths(coords))
 
+# tworzenie scatterplota połączonych punktów
 def plot(ax, coords):
     ax.set_title(f'Cost: {get_multiple_paths_distance(coords)}')
     for path, color in zip(into_vehicle_paths(coords), ['r', 'g', 'b', 'gold', 'violet']):
@@ -57,7 +64,7 @@ def plot(ax, coords):
 if __name__ == "__main__":
     coords = []
     for i, value in enumerate(values):
-        coords.append(Coordinate(value[0], value[1], value[2], i))
+        coords.append(Coordinate(value[0], value[1], value[2], i)) # przypisane koordynatów i towarów
 
     fig = plt.figure(figsize=(10, 5))
     ax1 = fig.add_subplot(121)
@@ -78,6 +85,10 @@ if __name__ == "__main__":
             else:
                 coords[r1], coords[r2] = coords[r2], coords[r1]
 
+    for i, path in enumerate(into_vehicle_paths(coords)):
+        print(f'Vehicle {i + 1}: {get_total_distance(path)}km, path: {" -> ".join(str(point.index) for point in path)}')
+    print(f"Total length: {min_cost}km")
+    
     ax2 = fig.add_subplot(122)
     plot(ax2, coords)
     plt.show()
