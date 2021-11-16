@@ -38,7 +38,7 @@ if __name__ == "__main__":
     FACTOR = 0.99
     T_INIT = T
     MAX_EPOCH = 100
-    MAX_TRIES = 100
+    MAX_TRIES = 1000
     VEHICLES = 5
     MAX_CAPACITY = 1000
 

@@ -8,9 +8,9 @@ distance = [[round(((distance.distance(tuple(x[:2]), tuple(y[:2]))).km)) for y i
 
 # wartości które możemy zmieniać
 T = 30
-FACTOR = 0.99
+FACTOR = 0.999
 T_INIT = T
-MAX_EPOCH = 500
+MAX_EPOCH = 1000
 MAX_TRIES = 100
 CAPACITY = 1000
 
@@ -24,7 +24,7 @@ class Coordinate:
     def __repr__(self):
         return self.index
 
-# capacity constraint
+# limit pojemności 
 def into_vehicle_paths(coords):
     tempcoords = coords[1:]
     paths = [[coords[0]]]
@@ -64,14 +64,15 @@ def plot(ax, coords):
 if __name__ == "__main__":
     coords = []
     for i, value in enumerate(values):
-        coords.append(Coordinate(value[0], value[1], value[2], i)) # przypisane koordynatów i towarów
+        coords.append(Coordinate(value[0], value[1], value[2], i)) # przypisane koordynatów oraz zapotrzebowania
 
     fig = plt.figure(figsize=(10, 5))
     ax1 = fig.add_subplot(121)
     plot(ax1, coords)
 
-    min_cost = get_multiple_paths_distance(coords)
+    min_cost = get_multiple_paths_distance(coords) # min dystans obliczany jako suma tras wszystkich pojazdów
 
+    # wykorzystanie algorytmu wyżarzania 
     for i in range(MAX_EPOCH):
         print(f'{i} cost={min_cost}')
         T *= FACTOR
